@@ -38,6 +38,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: background
+    uniqueID: 3523239531
+    locked: 0
+  - name: path
+    uniqueID: 1117025035
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
