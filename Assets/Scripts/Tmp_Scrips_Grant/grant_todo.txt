@@ -1,4 +1,0 @@
-Grant todo: 
-NPCs
-	- try add way for non-tech people to setup npc path/modify
-	- add npc management script to manage force walk/ wander/ interact state
