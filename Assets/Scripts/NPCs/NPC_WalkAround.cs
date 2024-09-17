@@ -79,17 +79,18 @@ public class NPC_WalkAround : MonoBehaviour
 		if (!pauseMovement)
 		{
 			thisTransform.position = new Vector2(thisTransform.position.x + (moveSpeed * Time.deltaTime * currentMoveDirection.x), thisTransform.position.y + (moveSpeed * Time.deltaTime * currentMoveDirection.y));
-		}
+		
 
-		// When decision timer is up, pick a new direction and walk duration
-		if (decisionTimeCount > 0) decisionTimeCount -= Time.deltaTime;
-		else
-		{
-			// Choose a random time delay for making a movement decision ( how long to walk or stand in place )
-			decisionTimeCount = UnityEngine.Random.Range(decisionTime.min, decisionTime.max);
+			// When decision timer is up, pick a new direction and walk duration
+			if (decisionTimeCount > 0) decisionTimeCount -= Time.deltaTime;
+			else
+			{
+				// Choose a random time delay for making a movement decision ( how long to walk or stand in place )
+				decisionTimeCount = UnityEngine.Random.Range(decisionTime.min, decisionTime.max);
 
-			// Choose a movement direction, or stay in place
-			ChooseMoveDirection();
+				// Choose a movement direction, or stay in place
+				ChooseMoveDirection();
+			}
 		}
 	}
 
@@ -110,42 +111,65 @@ public class NPC_WalkAround : MonoBehaviour
 
 	// Basic collision detection, the responce is to set the current direction opposite of the collision. 
 	// Assumes a box 2d collider is used. 
-	private void OnCollisionEnter2D(Collision2D collision)
+	private void OnCollisionEnter2D(UnityEngine.Collision2D collision)
 	{
-	    // Get collision vertices
-		float v1_x = collision.GetContact(0).point.x;
-		float v1_y = collision.GetContact(0).point.y;
-		float v2_x = collision.GetContact(1).point.x;
-		float v2_y = collision.GetContact(1).point.y;
 
-		// Use collision vertices to determin which side of npc is colliding
-        if (v1_y == v2_y)
-        {
-            if (v1_y > thisTransform.position.y)
-			{
-				// Top side collision
-				currentMoveDirection = Vector2.down;
-			}
-			else
-			{
-				// Bottom side collision
-				currentMoveDirection = Vector2.up;
-			}
-        }
-		else
+		if (!collision.gameObject.tag.Equals("Player"))
 		{
-			if (v1_x > thisTransform.position.x)
+			// Get collision vertices
+			ContactPoint2D[] contactPoints = new ContactPoint2D[4];
+			collision.GetContacts(contactPoints);
+			float v1_x = contactPoints[0].point.x;
+			float v1_y = contactPoints[0].point.y;
+			float v2_x = contactPoints[1].point.x;
+			float v2_y = contactPoints[1].point.y;
+
+			// Use collision vertices to determin which side of npc is colliding
+			if (v1_y == v2_y)
 			{
-				// Right side collision
-				currentMoveDirection = Vector2.left;
+				if (v1_y > thisTransform.position.y)
+				{
+					// Top side collision
+					currentMoveDirection = Vector2.down;
+				}
+				else
+				{
+					// Bottom side collision
+					currentMoveDirection = Vector2.up;
+				}
 			}
 			else
 			{
-				// Left side collision
-				currentMoveDirection = Vector2.right;
+				if (v1_x > thisTransform.position.x)
+				{
+					// Right side collision
+					currentMoveDirection = Vector2.left;
+				}
+				else
+				{
+					// Left side collision
+					currentMoveDirection = Vector2.right;
+				}
 			}
-		}
 
-		decisionTimeCount = UnityEngine.Random.Range(decisionTime.min, decisionTime.max);
+			decisionTimeCount = UnityEngine.Random.Range(decisionTime.min, decisionTime.max);
+		}
+	}
+	
+	private void OnCollisionStay2D(UnityEngine.Collision2D collision)
+	{
+		if (collision.gameObject.tag.Equals("Player"))
+		{
+			pauseMovement = true;
+		}
+	}
+
+	private void OnCollisionExit2D(UnityEngine.Collision2D collision)
+	{
+		if (collision.gameObject.tag.Equals("Player"))
+		{
+			pauseMovement = false;
+		}
+		decisionTimeCount = decisionTime.min;
 	}
 }
