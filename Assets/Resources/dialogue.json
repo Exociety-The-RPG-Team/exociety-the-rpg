@@ -1,0 +1,26 @@
+{
+    "dialogues": [
+      {
+        "character": "Elias",
+        "lines": [
+          "I have seen the tide rise a thousand times.",
+          "But today... feels different.",
+          "Something is coming."
+        ]
+      },
+      {
+        "character": "Player",
+        "lines": [
+          "What do you mean?",
+          "Is it the time loop again?"
+        ]
+      },
+      {
+        "character": "Elias",
+        "lines": [
+          "Yes. The loop grows stronger with each tide."
+        ]
+      }
+    ]
+}
+  
