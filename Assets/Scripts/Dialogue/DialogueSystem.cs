@@ -10,7 +10,7 @@ public class Dialogue
     public string character;
     public string[] lines;
     public int emotionID; // Add a field for the character icon
-    public CharacterData characterData;
+    // public CharacterData characterData;
 }
 
 [System.Serializable]
@@ -21,6 +21,7 @@ public class DialogueContainer
 
 public class DialogueSystem : MonoBehaviour
 {
+    
     public DialogueContainer dialogueContainer; // Holds parsed JSON data
 
     // References to the UI elements
@@ -31,6 +32,8 @@ public class DialogueSystem : MonoBehaviour
     private int currentDialogueIndex = 0; // To track the current dialogue
     private int currentLineIndex = 0; // To track the current line within a dialogue
 
+    public bool isActive;
+
     public void LoadDialogueFromJson(string json)
     {
         dialogueContainer = JsonUtility.FromJson<DialogueContainer>(json);
@@ -39,9 +42,11 @@ public class DialogueSystem : MonoBehaviour
     // Function to start the dialogue and display the first character's dialogue
     public void StartDialogue()
     {
+        
         currentDialogueIndex = 0;
         currentLineIndex = 0;
         DisplayDialogue();
+        isActive = true;
     }
 
     // Function to display the current dialogue on the UI
@@ -54,11 +59,11 @@ public class DialogueSystem : MonoBehaviour
             // Update the UI elements with the current dialogue
             characterNameText.text = currentDialogue.character;
             dialogueText.text = currentDialogue.lines[currentLineIndex];
-
-            if (currentDialogue.emotionID != null)
-            {
-                characterIcon.sprite = currentDialogue.characterData.emotionsIcons[currentDialogue.emotionID]; // Update the character's icon
-            }
+            
+            
+            //FIXME: fix this
+            // characterIcon.sprite = currentDialogue.characterData.emotionsIcons[currentDialogue.emotionID]; // Update the character's icon
+            
 
             // Advance to the next line within the same dialogue
             currentLineIndex++;
@@ -79,7 +84,9 @@ public class DialogueSystem : MonoBehaviour
         }
         else
         {
+            
             Debug.Log("End of dialogue");
+            isActive = false;
         }
     }
 }

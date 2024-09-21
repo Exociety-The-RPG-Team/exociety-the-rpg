@@ -19,4 +19,12 @@ public class DialogueLoader : MonoBehaviour
             Debug.LogError("Failed to load dialogue.json!");
         }
     }
+
+    void Update() {
+        if (dialogueSystem.isActive) {
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                dialogueSystem.NextDialogue();
+            }
+        }
+    }
 }
