@@ -16,7 +16,10 @@ public class NPC_WalkAround : MonoBehaviour
 
 	// An option for otherscripts to interrupt the movement - should be when interacting with NPCs
 	[NonSerialized]
-	public bool pauseMovement = false;
+	public bool movementPauseRequest = false;
+
+	// Internal var mainly used for controlling collision responses and other internal algorithms. Should be prioritized over movementPauseRequest where sensible.
+	private bool movementCommand = true;
 
 	// A minimum and maximum time delay for taking a decision, choosing a direction to move in
 	public (int min, int max) decisionTime = (1, 4);
@@ -73,10 +76,10 @@ public class NPC_WalkAround : MonoBehaviour
 	}
 
 	// Update is called once per frame
-	void Update()
+	void FixedUpdate()
 	{
-		// Move the object in the chosen direction at the set speed
-		if (!pauseMovement)
+		// Move the NPC in random direction.
+		if (!movementPauseRequest && movementCommand)
 		{
 			thisTransform.position = new Vector2(thisTransform.position.x + (moveSpeed * Time.deltaTime * currentMoveDirection.x), thisTransform.position.y + (moveSpeed * Time.deltaTime * currentMoveDirection.y));
 		
@@ -116,40 +119,27 @@ public class NPC_WalkAround : MonoBehaviour
 
 		if (!collision.gameObject.tag.Equals("Player"))
 		{
-			// Get collision vertices
-			ContactPoint2D[] contactPoints = new ContactPoint2D[4];
-			collision.GetContacts(contactPoints);
-			float v1_x = contactPoints[0].point.x;
-			float v1_y = contactPoints[0].point.y;
-			float v2_x = contactPoints[1].point.x;
-			float v2_y = contactPoints[1].point.y;
-
-			// Use collision vertices to determin which side of npc is colliding
-			if (v1_y == v2_y)
+			int colDirection = DetermineRectCollisionSide(collision);
+			switch (colDirection)
 			{
-				if (v1_y > thisTransform.position.y)
-				{
+				case 0:
 					// Top side collision
 					currentMoveDirection = Vector2.down;
-				}
-				else
-				{
-					// Bottom side collision
-					currentMoveDirection = Vector2.up;
-				}
-			}
-			else
-			{
-				if (v1_x > thisTransform.position.x)
-				{
+					break;
+				case 1:
 					// Right side collision
 					currentMoveDirection = Vector2.left;
-				}
-				else
-				{
+					break;
+				case 2:
+					// Bottom side collision
+					currentMoveDirection = Vector2.up;
+					break;
+				case 3:
 					// Left side collision
 					currentMoveDirection = Vector2.right;
-				}
+					break;
+				default:
+					break;
 			}
 
 			decisionTimeCount = UnityEngine.Random.Range(decisionTime.min, decisionTime.max);
@@ -160,16 +150,71 @@ public class NPC_WalkAround : MonoBehaviour
 	{
 		if (collision.gameObject.tag.Equals("Player"))
 		{
-			pauseMovement = true;
+			movementCommand = false;
 		}
 	}
 
+	
 	private void OnCollisionExit2D(UnityEngine.Collision2D collision)
 	{
 		if (collision.gameObject.tag.Equals("Player"))
 		{
-			pauseMovement = false;
+			movementCommand = true;
+			decisionTimeCount = decisionTime.min;
+			currentMoveDirection = Vector2.zero;
 		}
-		decisionTimeCount = decisionTime.min;
+		
+	}
+
+	/* Given the collision data for a rect collider this method returns an int representation of which side the collision occured on. 
+	 * int to side reference:
+	 * 0 = North / Top
+	 * 1 = East / Right
+	 * 2 = South / Bottom
+	 * 3 = West / Left
+	 * 
+	 * -1 = something didn't work
+	 */
+	private int DetermineRectCollisionSide(UnityEngine.Collision2D collision)
+	{
+		int colSide = -1;
+
+		// Get collision vertices
+		ContactPoint2D[] contactPoints = new ContactPoint2D[4];
+		collision.GetContacts(contactPoints);
+		float v1_x = contactPoints[0].point.x;
+		float v1_y = contactPoints[0].point.y;
+		float v2_x = contactPoints[1].point.x;
+		float v2_y = contactPoints[1].point.y;
+
+		// Use collision vertices to determin which side of npc is colliding
+		if (v1_y == v2_y)
+		{
+			if (v1_y > thisTransform.position.y)
+			{
+				// Top side collision
+				colSide = 0;
+			}
+			else
+			{
+				// Bottom side collision
+				colSide = 2;
+			}
+		}
+		else
+		{
+			if (v1_x > thisTransform.position.x)
+			{
+				// Right side collision
+				colSide = 1;
+			}
+			else
+			{
+				// Left side collision
+				colSide = 3;
+			}
+		}
+
+		return colSide;
 	}
 }

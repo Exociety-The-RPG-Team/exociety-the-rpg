@@ -6,7 +6,7 @@ using UnityEngine;
 public class PressEtest : MonoBehaviour
 {
     public GameObject[] npcs;
-    public List<NPC_WalkAround> npcsWalkScripts = new List<NPC_WalkAround>();
+    public List<NPC_Manager> npcsManagerScripts = new List<NPC_Manager>();
 
     // Start is called before the first frame update
     void Start()
@@ -16,7 +16,7 @@ public class PressEtest : MonoBehaviour
         {
             foreach (GameObject npc in npcs)
             {
-                npcsWalkScripts.Add(npc.GetComponent<NPC_WalkAround>());
+                npcsManagerScripts.Add(npc.GetComponent<NPC_Manager>());
             }
 
         }
@@ -27,17 +27,17 @@ public class PressEtest : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.E))
         {
-            foreach (NPC_WalkAround walkAround in npcsWalkScripts)
+            foreach (NPC_Manager manager in npcsManagerScripts)
             {
-                walkAround.pauseMovement = true;
+                manager.pauseNPCMovement();
             }
         }
 
 		if (Input.GetKeyDown(KeyCode.Q))
 		{
-			foreach (NPC_WalkAround walkAround in npcsWalkScripts)
+			foreach (NPC_Manager manager in npcsManagerScripts)
 			{
-				walkAround.pauseMovement = false;
+                manager.resumeNPCMovement();
 			}
 		}
 	}

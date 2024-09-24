@@ -20,4 +20,22 @@ public class NPC_Manager : MonoBehaviour
     {
         
     }
+
+    public void pauseNPCMovement()
+    {
+        if(!walkScript.movementPauseRequest)
+        {
+            walkScript.movementPauseRequest = true;
+            Debug.Log("stopped movement");
+        }
+    }
+
+    public void resumeNPCMovement()
+    {
+		if (walkScript.movementPauseRequest)
+		{
+			walkScript.movementPauseRequest = false;
+			Debug.Log("started movement");
+		}
+	}
 }
