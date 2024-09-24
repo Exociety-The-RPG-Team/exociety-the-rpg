@@ -99,7 +99,7 @@ public class NPC_WalkAround : MonoBehaviour
 
 	// Make a randome choice about which direction to move.
 	// Will alternate stopping and moving.
-	void ChooseMoveDirection()
+	private void ChooseMoveDirection()
 	{
 		if (currentMoveDirection == Vector2.zero)
 		{

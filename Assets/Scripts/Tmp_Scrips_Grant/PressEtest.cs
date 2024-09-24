@@ -29,7 +29,7 @@ public class PressEtest : MonoBehaviour
         {
             foreach (NPC_Manager manager in npcsManagerScripts)
             {
-                manager.pauseNPCMovement();
+                manager.PauseMovement();
             }
         }
 
@@ -37,7 +37,23 @@ public class PressEtest : MonoBehaviour
 		{
 			foreach (NPC_Manager manager in npcsManagerScripts)
 			{
-                manager.resumeNPCMovement();
+                manager.ResumeMovement();
+			}
+		}
+
+		if (Input.GetKeyDown(KeyCode.J))
+		{
+			foreach (NPC_Manager manager in npcsManagerScripts)
+			{
+                manager.SwitchToWalkAroundMovement();
+			}
+		}
+
+		if (Input.GetKeyDown(KeyCode.K))
+		{
+			foreach (NPC_Manager manager in npcsManagerScripts)
+			{
+                manager.SwitchToWaypointMovement();
 			}
 		}
 	}
