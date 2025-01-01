@@ -1,30 +1,46 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    Rigidbody2D body;
+    private Rigidbody2D body;
+    private InputMaster controls;
 
-    float horizontal;
-    float vertical;
-
+    private Vector2 direction;
     public float runSpeed = 20.0f;
 
-    void Start ()
+    void Awake()
     {
-        body = GetComponent<Rigidbody2D>(); 
+        body = GetComponent<Rigidbody2D>();
+
+        // Instantiate the InputMaster
+        controls = new InputMaster();
+
+        // Link the Movement action to the Move method
+        controls.Player.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
+        controls.Player.Movement.canceled += ctx => Move(Vector2.zero); // Stop movement when input is canceled
     }
 
-    void Update ()
+    void Move(Vector2 direction)
     {
-        horizontal = Input.GetAxisRaw("Horizontal");
-        vertical = Input.GetAxisRaw("Vertical"); 
+        this.direction = direction;
     }
 
-    private void FixedUpdate()
-    {  
-        body.velocity = new Vector2(horizontal * runSpeed, vertical * runSpeed);
+    void FixedUpdate()
+    {
+        // Apply movement
+        body.linearVelocity = direction * runSpeed;
+    }
+
+    private void OnEnable()
+    {
+        // Enable input system
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        // Disable input system
+        controls.Disable();
     }
 }
