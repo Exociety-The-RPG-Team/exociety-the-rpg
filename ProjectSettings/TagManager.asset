@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - NPC
   layers:
   - Default
   - TransparentFX
@@ -38,6 +39,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: background
+    uniqueID: 3523239531
+    locked: 0
+  - name: background-foreground
+    uniqueID: 3941141023
+    locked: 0
+  - name: path
+    uniqueID: 1117025035
+    locked: 0
+  - name: path-forground
+    uniqueID: 3289962257
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
